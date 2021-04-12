@@ -1,0 +1,388 @@
+<!-- This code was thrown together quickly and isn't very pretty. Proceed at your own risk. -->
+<html>
+  <head>
+    <title>AC Current Phasor Applet (Projection onto horizontal)</title>
+    <style>
+      body {
+        font-family: sans-serif;
+      }
+
+      .PhasorBox {
+        height: 200px;
+        width: 200px;
+      }
+
+      .WaveBox {
+        width: 400px;
+        height: 200px;
+      }
+
+      .columns {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        grid-template-rows: auto;
+        grid-gap: 16px;
+      }
+      .column {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+      }
+      .diagram {
+        position: relative;
+        border: 1px solid #ddd;
+        box-shadow: 0 4px 8px #eee;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 16px;
+
+        display: flex;
+        justify-content: center;
+      }
+      .labels {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        display: flex;
+        justify-content: flex-end;
+        padding: 4px;
+      }
+      .label {
+        font-size: 14px;
+        font-family: monospace;
+        color: white;
+        padding: 2px 8px;
+        min-width: 6px;
+        border-radius: 999px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-left: 4px;
+        cursor: pointer;
+        user-select: none;
+      }
+      .label-hidden {
+        opacity: 0.4;
+      }
+    </style>
+  </head>
+  <body>
+    <script type="module">
+      import { html, render, useState, useEffect, useContext, createContext } from "https://unpkg.com/htm/preact/standalone.module.js";
+
+      const WaveBoxContext = createContext({ omega: 0, time: 0 });
+
+      function ACPhasorApplet() {
+        const [time, timeVel, setTime] = useProgressValue(0, 0);
+
+        const [omega, setOmega] = useState(250); // rad/s
+
+        const [R, setR] = useState(250);
+        const [L, setL] = useState(500);
+        const [C, setC] = useState(20);
+
+        const phi = Math.atan((omega*L/10**3 - 10**6/(omega*C)) / R);
+        const angle = omega * time - phi;
+
+        const V_0 = 250;
+        const I = V_0 / Math.sqrt(
+          R**2 +
+          (omega*L/10**3 - 10**6/(omega*C))**2
+        );
+        const V_R = I*R;
+        const V_L = I*omega*L/10**3;
+        const V_C = omega === 0 ? 0 : I**2 * 10**6/(omega*C);
+
+        const vScale = 0.2;
+        const iScale = vScale * 100;
+
+        console.log(I);
+
+        const [showI, setShowI] = useState(true);
+        const [showR, setShowR] = useState(true);
+        const [showL, setShowL] = useState(false);
+        const [showC, setShowC] = useState(false);
+
+        return html`
+          <div class="columns">
+            <div class="column">
+              <div class="diagram">
+                <${WaveBox} time=${time} omega=${omega} phi=${phi}>
+                  ${showL && html`<${Wave} dirDiff=${Math.PI / 2} mag=${V_L*vScale} color="#2fcc5b" />`}
+                  ${showR && html`<${Wave} dirDiff=${0} mag=${V_R*vScale} color="#0e8a30" />`}
+                  ${showC && html`<${Wave} dirDiff=${-Math.PI / 2} mag=${V_C*vScale} color="#043612" />`}
+
+                  ${showI && html`<${Wave} dirDiff=${0} mag=${I*iScale} color="#7d2b8b" />`}
+                <//>
+              </div>
+
+              <div style=${{ width: 432, display: "flex", alignItems: "center" }}>
+                <button
+                  onClick=${() => {
+                    if (timeVel === 0) {
+                      setTime(time, 0.1 / 5);
+                    } else {
+                      setTime(time, 0);
+                    }
+                  }}
+                >
+                  ${timeVel === 0 ? "Play" : "Pause"}
+                </button>
+
+                <label style=${{ display: "flex", alignItems: "center", flexGrow: 1 }}>
+                  <input
+                    style=${{ flexGrow: 1 }}
+                    type="range"
+                    min=${0}
+                    max=${0.1}
+                    step=${0.0001}
+                    value=${time}
+                    onInput=${(event) => {
+                      setTime(Number(event.target.value), 0);
+                    }}
+                  />
+                  t: ${Math.round(time * 1000)} ms
+                </label>
+              </div>
+
+              <label style=${{ display: "block" }}>
+                <input
+                  type="range"
+                  min=${0}
+                  max=${500}
+                  step=${1}
+                  value=${omega}
+                  onInput=${(event) => {
+                    setOmega(Number(event.target.value));
+                  }}
+                />
+                ω: ${omega} rad/s
+              </label>
+            </div>
+
+            <div class="column">
+              <div class="diagram">
+                <${PhasorBox}>
+                  ${showL && V_L !== 0 && html`<${Phasor} dir=${angle + Math.PI / 2} mag=${V_L*vScale} color="#2fcc5b" />`}
+                  ${showR && V_R !== 0 && html`<${Phasor} dir=${angle} mag=${V_R*vScale} color="#0e8a30" />`}
+                  ${showC && V_C !== 0 && html`<${Phasor} dir=${angle - Math.PI / 2} mag=${V_C*vScale} color="#043612" />`}
+
+                  ${showI && I !== 0 && html`<${Phasor} dir=${angle} mag=${I*iScale} color="#7d2b8b" />`}
+                <//>
+
+                <div class="labels">
+                  <span
+                    class=${`label ${showI ? "label-shown" : "label-hidden"}`}
+                    style=${{ backgroundColor: "#7d2b8b" }}
+                    onClick=${() => { setShowI(!showI) }}
+                  >
+                    I
+                  </span>
+                  <span
+                    class=${`label ${showL ? "label-shown" : "label-hidden"}`}
+                    style=${{ backgroundColor: "#2fcc5b" }}
+                    onClick=${() => { setShowL(!showL) }}
+                  >
+                    <span>V<sub>L</sub></span>
+                  </span>
+                  <span
+                    class=${`label ${showR ? "label-shown" : "label-hidden"}`}
+                    style=${{ backgroundColor: "#0e8a30" }}
+                    onClick=${() => { setShowR(!showR) }}
+                  >
+                    <span>V<sub>R</sub></span>
+                  </span>
+                  <span
+                    class=${`label ${showC ? "label-shown" : "label-hidden"}`}
+                    style=${{ backgroundColor: "#043612" }}
+                    onClick=${() => { setShowC(!showC) }}
+                  >
+                    <span>V<sub>C</sub></span>
+                  </span>
+                </div>
+              </div>
+
+              <div style=${{ alignSelf: "center" }}>
+                <div>
+                  <label>
+                    <input
+                      type="range"
+                      min=${0}
+                      max=${500}
+                      step=${1}
+                      value=${R}
+                      onInput=${(event) => {
+                        setR(Number(event.target.value));
+                      }}
+                    />
+                    R: ${R} Ω
+                  </label>
+                </div>
+
+                <div>
+                  <label>
+                    <input
+                      type="range"
+                      min=${0}
+                      max=${1000}
+                      step=${1}
+                      value=${L}
+                      onInput=${(event) => {
+                        setL(Number(event.target.value));
+                      }}
+                    />
+                    L: ${L} mH
+                  </label>
+                </div>
+
+                <div>
+                  <label>
+                    <input
+                      type="range"
+                      min=${0}
+                      max=${1000}
+                      step=${1}
+                      value=${C}
+                      onInput=${(event) => {
+                        setC(Number(event.target.value));
+                      }}
+                    />
+                    C: ${C} µF
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      function PhasorBox({ children }) {
+        return html`
+          <svg viewBox="0 0 100 100" class="PhasorBox">
+            <line x1=${4} x2=${96} y1=${50} y2=${50} stroke="#ddd" />
+            <path d="M0,0 V4 L4,2 Z" fill="#ddd" transform="translate(96 48)" />
+            <path d="M0,0 V4 L4,2 Z" fill="#ddd" transform="translate(4 52) rotate(180)" />
+
+            ${children}
+          </svg>
+        `;
+      }
+
+      function Phasor({ dir, mag, color = "black" }) {
+        const x = 50 + Math.cos(dir) * mag;
+        const y = 50 - Math.sin(dir) * mag;
+
+        return html`
+          <line
+            x1=${50}
+            y1=${50}
+            x2=${x}
+            y2=${y}
+            stroke=${color}
+            stroke-width=${1.5}
+            stroke-linecap="round"
+          />
+          <path
+            d="M0,0 V4 L4,2 Z"
+            fill=${color}
+            transform="
+              translate(${x} ${y})
+              rotate(${-dir / Math.PI * 180})
+              translate(-2.4 -2)
+            "
+          />
+
+          <circle
+            cx=${x}
+            cy=${50}
+            r=${2}
+            fill=${color}
+          />
+        `;
+      }
+
+      function WaveBox({ children, time, omega, phi }) {
+        return html`
+          <${WaveBoxContext.Provider} value=${{ time, omega, phi }}>
+            <svg viewBox="0 0 200 100" class="WaveBox">
+              <line x1=${4} x2=${4} y1=${4} y2=${96} stroke="#ddd" />
+                <path d="M0,0 H4 L2,4 Z" fill="#ddd" transform="translate(2 96)" />
+              <path d="M0,0 H4 L2,4 Z" fill="#ddd" transform="translate(6 4) rotate(180)" />
+
+              <line x1=${4} x2=${196} y1=${50} y2=${50} stroke="#ddd" />
+
+              <line x1=${196} x2=${196} y1=${4} y2=${96} stroke="#ddd" />
+                <path d="M0,0 H4 L2,4 Z" fill="#ddd" transform="translate(194 96)" />
+              <path d="M0,0 H4 L2,4 Z" fill="#ddd" transform="translate(198 4) rotate(180)" />
+
+              <line x1=${4} x2=${196} y1=${50} y2=${50} stroke="#ddd" />
+
+              ${children}
+            </svg>
+          <//>
+        `;
+      }
+
+      function Wave({ dirDiff, mag, color = "black" }) {
+        const { time, omega, phi } = useContext(WaveBoxContext);
+
+        const x = 50 + Math.cos(omega * time - phi + dirDiff) * mag;
+
+        let points = [];
+        const startTime = Math.max(0, time - 0.1);
+        for (let t = startTime; t <= time; t += 1/2000) {
+          points.push([
+            t - startTime,
+            Math.cos(omega * t - phi + dirDiff) * mag
+          ]);
+        }
+
+        return html`
+          <path
+            d=${points.map((p, i) => (i === 0 ? "M" : "L") + `${p[0]*192/0.1 + 4} ${50 - p[1]}`).join(" ")}
+            stroke=${color}
+            fill="none"
+          />
+
+          <circle
+            cx=${Math.min(time, 0.1)*192/0.1 + 4}
+            cy=${100-x}
+            r=${2}
+            fill=${color}
+          />
+        `;
+      }
+
+      function useProgressValue(defaultValue = 0, defaultVelocity = 0) {
+        const [value, setValue] = useState(defaultValue);
+        const [velocity, setVelocity] = useState(defaultVelocity);
+        const [startTime, setStartTime] = useState(new Date());
+
+        const [, forceRerender] = useState();
+        useEffect(() => {
+          if (velocity !== 0) {
+            const interval = setInterval(() => forceRerender(Math.random()), 1);
+            return () => {
+              clearInterval(interval);
+            }
+          }
+        }, [velocity]);
+
+        const currentValue = value + velocity * (new Date() - startTime) / 1000;
+        return [
+          currentValue,
+          velocity,
+          (newValue = currentValue, newVelocity = velocity) => {
+            setValue(newValue);
+            setVelocity(newVelocity);
+            setStartTime(new Date());
+          }
+        ]
+      }
+
+      render(html`<${ACPhasorApplet} />`, document.body);
+    </script>
+  </body>
+</html>
