@@ -1,2 +1,2 @@
 # pulljosh.github.io
-Static pages dumping ground
+Random code dumping ground of [Josh Pullen](https://joshuapullen.com/).
