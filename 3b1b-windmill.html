@@ -1,0 +1,164 @@
+<html>
+  <head>
+    <title>3Blue1Brown Internship Application | The Windmill Problem | Josh Pullen</title>
+    <style>
+      body {
+        max-width: 500px;
+        margin: 0 auto;
+        padding: 40px;
+
+        font-size: 1.2rem;
+      }
+
+      .name {
+        margin-bottom: 2em;
+        color: #666;
+      }
+
+      .columns {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        grid-gap: 25px;
+      }
+
+      .diagram {
+        width: 200px;
+        height: 200px;
+        background: black;
+        border-radius: 4px;
+      }
+
+      .text {
+        margin: 0;
+      }
+
+      footer {
+        margin-top: 40px;
+        display: flex;
+        align-items: flex-start;
+      }
+      footer img {
+        width: 180px;
+        margin-right: -20px;
+      }
+
+      @media (max-width: 500px) {
+        .columns {
+          grid-template-columns: 1fr;
+        }
+        .diagram {
+          margin: 0 auto;
+        }
+        .text {
+          text-align: center;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>The Windmill Problem</h1>
+    <div class="name">
+      Illustrated by me, <a href="https://joshuapullen.com/">Josh Pullen</a>, for my 3Blue1Brown internship application.
+    </div>
+
+    <div class="columns">
+      <svg class="diagram" width="200" height="200" viewBox="0 0 100 100">
+        <g fill="white">
+          <circle cx="20" cy="50" r="4" />
+          <circle cx="80" cy="20" r="4" />
+          <circle cx="60" cy="70" r="4" />
+        </g>
+      </svg>
+      <p class="text">Let <strong>S</strong> be a finite set of at least two points in the plane.</p>
+
+      <svg class="diagram" width="200" height="200" viewBox="0 0 100 100">
+        <rect x="0" y="0" width="100" height="100" fill="rgb(55,0,0)"/>
+        <g fill="white">
+          <circle cx="30" cy="70" r="4" />
+          <circle cx="50" cy="50" r="4" />
+          <circle cx="70" cy="30" r="4" />
+        </g>
+        <g stroke="rgb(240,13,14)" stroke-width="6">
+          <path d="M64,64L85.999,85.999" />
+          <path d="M85.999,64L64,85.999" />
+        </g>
+      </svg>
+      <p class="text">Assume that no three points of <strong>S</strong> are colinear.</p>
+
+      <svg class="diagram" width="200" height="200" viewBox="0 0 100 100">
+        <path d="M120,50L0,90" stroke="white" stroke-opacity="0.4" stroke-width="2" />
+        <g fill="white">
+          <circle cx="20" cy="50" r="4" />
+          <circle cx="80" cy="20" r="4" />
+          <circle cx="60" cy="70" r="4" fill="#1c74ff" />
+        </g>
+      </svg>
+      <p class="text">A <em>windmill</em> is a process that starts with a line ℓ going through a single point <strong style="color: blue;">P</strong> ∈ <strong>S</strong>.</p>
+
+      <svg class="diagram" width="200" height="200" viewBox="0 0 100 100">
+        <path d="M120,50L0,90" stroke="white" stroke-opacity="0.4" stroke-width="2" />
+        <path d="M100,90L0,40" stroke="white" stroke-opacity="0.4" stroke-width="2" stroke-dasharray="3,4,0,0" />
+        <g fill="white">
+          <circle cx="20" cy="50" r="4" />
+          <circle cx="80" cy="20" r="4" />
+          <circle cx="60" cy="70" r="4" fill="#1c74ff" />
+        </g>
+        <g fill="yellow">
+          <path d="M78.518,70.802L76.053,74.193L74.819,70.186C75.59,71.265 77.44,71.573 78.518,70.802Z" />
+          <path d="M86.715,72.481L88.059,77.329L91.131,73.346C89.811,74.233 87.603,73.801 86.715,72.481Z" />
+          <path d="M33.285,67.519L31.941,62.671L28.869,66.654C30.189,65.767 32.397,66.199 33.285,67.519Z" />
+          <path d="M41.482,69.198L43.947,65.807L45.181,69.814C44.41,68.735 42.56,68.427 41.482,69.198Z" />
+        </g>
+        <g fill="none" stroke="yellow" stroke-width="1">
+          <path d="M76.448,67.825C76.544,68.546 76.592,69.273 76.592,70C76.592,70.412 76.576,70.824 76.546,71.234" />
+          <path d="M88.75,73.796C88.916,72.539 89,71.271 89,70C89,68.729 88.916,67.459 88.75,66.199" />
+          <path d="M31.25,66.204C31.084,67.461 31,68.729 31,70C31,71.271 31.084,72.541 31.25,73.801" />
+          <path d="M43.552,72.175C43.456,71.454 43.408,70.727 43.408,70C43.408,69.588 43.424,69.176 43.454,68.766" />
+        </g>
+      </svg>
+      <p class="text">The line rotates clockwise about the pivot <strong style="color: blue;">P</strong> until the first time that the line meets some other point belonging to <strong>S</strong>.</p>
+
+      <svg class="diagram" width="200" height="200" viewBox="0 0 100 100">
+        <path d="M100,89.472L0,40.174" stroke="white" stroke-opacity="0.4" stroke-width="2" />
+        <path d="M36.945,100L3,0.045" stroke="white" stroke-opacity="0.4" stroke-width="2" stroke-dasharray="3,4,0,0" />
+        <g fill="white">
+          <circle cx="20" cy="50" r="4" fill="#0dad00" />
+          <circle cx="80" cy="20" r="4" />
+          <circle cx="60" cy="70" r="4" fill="#1c74ff" />
+        </g>
+        <g fill="yellow">
+          <path d="M32.575,63.61L28.438,64.288L30.378,60.571C30.167,61.88 31.266,63.4 32.575,63.61Z" />
+          <path d="M37.223,70.567L34.77,74.959L39.756,74.287C38.193,73.99 36.927,72.13 37.223,70.567Z" />
+          <path d="M2.719,29.471L5.173,25.079L0.187,25.751C1.75,26.048 3.016,27.908 2.719,29.471Z" />
+          <path d="M7.367,36.428L11.505,35.75L9.564,39.467C9.775,38.158 8.676,36.639 7.367,36.428Z" />
+        </g>
+        <g fill="none" stroke="yellow" stroke-width="1">
+          <path d="M33.196,60.038C32.757,60.618 32.28,61.168 31.769,61.685C31.479,61.978 31.179,62.26 30.869,62.53" />
+          <path d="M37.746,72.934C38.748,72.156 39.699,71.313 40.592,70.41C41.486,69.506 42.319,68.544 43.087,67.531" />
+          <path d="M2.197,27.105C1.195,27.882 0.243,28.725 -0.65,29.629C-1.544,30.533 -2.377,31.494 -3.145,32.508" />
+          <path d="M6.746,40C7.185,39.421 7.662,38.871 8.173,38.353C8.463,38.06 8.763,37.778 9.074,37.508" />
+        </g>
+      </svg>
+      <p class="text">This point, <strong style="color: green;">Q</strong>, takes over as the new pivot, and the line rotates clockwise about <strong style="color: green;">Q</strong>, until it next meets a point of <strong>S</strong>.</p>
+    </div>
+
+    <p>This process continues indefinitely. Show that we can choose a point <strong>P</strong> in <strong>S</strong> and a line ℓ going through <strong>P</strong> such that the resulting windmill uses each point of <strong>S</strong> as a pivot infinitely many times.</p>
+
+    <footer>
+      <img src="https://cdn.shopify.com/s/files/1/0506/0633/products/3blue1brown-pi-plushie_df42bd59-cea7-4a39-bd97-fe034b8058c7_1060x1060@2x.jpg?v=1571266194" alt="Pi Guy" />
+
+      <svg viewBox="0 0 254 115">
+          <path d="M12.079,17.572C12.865,15.147 15.396,13.329 18.318,13.329C21.24,13.329 23.771,15.147 24.557,17.572C27.198,17.542 29.779,19.294 30.682,21.966C31.585,24.639 30.568,27.514 28.413,28.983C29.259,31.389 28.323,34.29 25.959,35.942C23.595,37.593 20.436,37.552 18.318,36.035C16.2,37.552 13.041,37.593 10.677,35.942C8.313,34.29 7.377,31.389 8.223,28.983C6.068,27.514 5.051,24.639 5.954,21.966C6.857,19.294 9.438,17.542 12.079,17.572Z" style="fill:white;stroke:rgb(233,234,237);stroke-width:3px;"/>
+          <path d="M46.113,10.282C46.913,7.292 49.864,5 53.304,5C56.744,5 59.695,7.292 60.495,10.282C63.423,9.496 66.837,10.966 68.558,14.016C70.278,17.067 69.814,20.829 67.685,23.033C69.814,25.237 70.278,28.999 68.558,32.049C66.837,35.099 63.423,36.569 60.495,35.784C59.695,38.773 56.744,41.065 53.304,41.065C49.864,41.065 46.913,38.773 46.113,35.784C43.185,36.569 39.77,35.099 38.05,32.049C36.33,28.999 36.794,25.237 38.923,23.033C36.794,20.829 36.33,17.067 38.05,14.016C39.77,10.966 43.185,9.496 46.113,10.282Z" style="fill:white;stroke:rgb(233,234,237);stroke-width:3px;"/>
+          <path d="M130.749,14.256C132.802,8.159 142.741,3.329 154.5,3.329C166.259,3.329 176.198,8.159 178.251,14.256C185.947,10.04 198.769,9.602 208.282,13.706C217.796,17.811 221.056,25.188 216.681,30.837C227.08,30.112 237.888,34.233 241.522,40.874C245.155,47.515 240.491,54.621 231.36,57.664C240.491,60.708 245.155,67.814 241.522,74.455C237.888,81.096 227.08,85.217 216.681,84.492C221.056,90.141 217.796,97.518 208.282,101.623C198.769,105.727 185.947,105.289 178.251,101.072C176.198,107.17 166.259,112 154.5,112C142.741,112 132.802,107.17 130.749,101.072C123.053,105.289 110.231,105.727 100.718,101.623C91.204,97.518 87.944,90.141 92.319,84.492C81.92,85.217 71.112,81.096 67.478,74.455C63.845,67.814 68.509,60.708 77.64,57.664C68.509,54.621 63.845,47.515 67.478,40.874C71.112,34.233 81.92,30.112 92.319,30.837C87.944,25.188 91.204,17.811 100.718,13.706C110.231,9.602 123.053,10.04 130.749,14.256Z" style="fill:white;stroke:rgb(233,234,237);stroke-width:3px;"/>
+          <g transform="matrix(0.978153,0,0,0.978153,-45.0769,-23.7676)">
+              <text x="163.092px" y="70.715px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:12px;">How can such a</text>
+              <text x="158.425px" y="85.152px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:12px;">delightfully simple</text>
+              <text x="142.415px" y="99.589px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:12px;">problem be so</text>
+              <text x="221.791px" y="99.589px" style="font-family:'Arial-ItalicMT', 'Arial', sans-serif;font-style:italic;font-size:12px;">difﬁcult</text>
+              <text x="259.139px" y="99.589px" style="font-family:'ArialMT', 'Arial', sans-serif;font-size:12px;">!?</text>
+          </g>
+      </svg>
+    </footer>
+  </body>
+</html>
